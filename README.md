@@ -1,56 +1,29 @@
 # ProphetBoost-A-Hybrid-Pipeline-for-Accurate-and-Transparent-Electricity-Load-Forecasting
 
+Accurate short-term electricity load forecasting is essential for reliable grid operation, resource planning, and energy management. Modern forecasting challenges require methods that can capture complex temporal patterns, remain interpretable, and maintain computational efficiency. ProphetBoost addresses this need by combining strong time-series decomposition, robust feature selection, and high-performance machine learning into a single, unified framework.
+
+##  Description
+
 ProphetBoost is a hybrid electricity load forecasting framework that integrates:
-Prophet-based trend & seasonality decomposition
-Stability-guided + embedded feature selection
-XGBoost regression for high predictive accuracy
-Unified benchmarking against SOTA methods (Transformer, DLinear, Deep RVFL, CNN-LSTM, CNN-ANN, ARIMA-LSTM)
 
-This repository provides the complete implementation, ensuring full reproducibility for all experiments reported in the manuscript “ProphetBoost: A Hybrid Pipeline for Accurate and Transparent Electricity Load Forecasting.”
+- **Prophet-based trend and seasonality decomposition** to capture long-term structure and multiple seasonal patterns  
+- **Stability-guided + embedded feature selection** to isolate the most informative predictors from a large engineered feature space  
+- **XGBoost regression** for accurate, efficient, and interpretable forecasting  
+- **Unified benchmarking** against state-of-the-art models, including Transformer, DLinear, Deep RVFL, CNN–LSTM, CNN–ANN, and ARIMA–LSTM  
+ 
 
+## 📘  ProphetBoost Pipeline Figure Explanation 
 <img width="5184" height="3068" alt="Amin" src="https://github.com/user-attachments/assets/1e674d01-c78b-4cd6-b08a-693665041d13" />
+The figure presents the end-to-end ProphetBoost workflow, showing how raw data is transformed into interpretable, high-accuracy electricity load forecasts. The pipeline integrates data preprocessing, Prophet-based decomposition, engineered features, a hybrid feature-selection mechanism, and XGBoost modeling with evaluation and SHAP explainability.
 
 
-### 🔍  ProphetBoost Pipeline Overview
 
-The figure above illustrates the complete ProphetBoost workflow, highlighting how the framework combines decomposition, engineered features, stability-driven feature selection, and XGBoost modeling into a unified forecasting pipeline.
+ ## 🔧 Feature Selection Process 
+ <img width="1488" height="629" alt="image" src="https://github.com/user-attachments/assets/2b31e9b1-44e3-4a5a-bed5-19c1ef4379a9" />
+
+The figure illustrates the hybrid feature selection strategy used in ProphetBoost. The process combines a simple statistical filter with an embedded XGBoost importance ranking and a stability-based selection mechanism. The goal is to identify a small set of highly informative and consistently important features from the full engineered feature set.
 
 
-**Main stages:**
-
-- **Data preprocessing**
-  - Remove empty columns
-  - Parse timestamps into Prophet’s `ds` format
-  - Impute missing numeric values with the mean
-
-- **Prophet decomposition**
-  - Extract long-term trend \(g(t)\)
-  - Model multiple seasonalities \(s(t)\) (daily, weekly, yearly)
-  - Optionally capture holiday/special-event effects \(h(t)\)  
-  These components are added as extra, interpretable features.
-
-- **Feature engineering**
-  - Temporal features: hour of day, day of week, weekend indicator
-  - Load history: lag\_1, lag\_24
-  - Rolling statistics: `roll3_mean`, `roll3_std`
-  - Weather lags from four stations (e.g., `JEJU_DI_lag1`)
-
-- **Dataset splitting**
-  - Training: **2012–2018**
-  - Testing: **2019–2020**  
-  Splits are strictly chronological to avoid look-ahead leakage.
-
-- **Hybrid feature selection**
-  - Filter step removes near-zero variance predictors
-  - Embedded + stability selection:
-    - Train XGBoost on 30 bootstrap samples
-    - Rank top-K features by gain in each run
-    - Keep features that appear in at least 60% of runs
-
-- **XGBoost training with selected features**
-  - Train the final XGBoost model on the stable feature subset
-  - Use time-series cross-validation and early stopping
-
-- **Model evaluation and SHAP analysis**
-  - Evaluate with MAE, MSE, RMSE, and MAPE
-  - Use SHAP values to explain the contribution of each feature
+## 📊 Explanation of ProphetBoost Model Results (Panels A–D)
+<img width="1383" height="985" alt="result" src="https://github.com/user-attachments/assets/1413c1b9-9379-463a-ba67-d3f706073bb2" />
+This figure summarizes ProphetBoost’s performance on the test set: the learning curve (A) shows fast, stable convergence, while actual vs. predicted loads (B) overlap closely with near-zero, symmetric residuals (C). Feature importance (D) highlights recent load dynamics (roll3_mean, lag_1) and key weather indices as the dominant predictors.
